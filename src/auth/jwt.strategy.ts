@@ -15,6 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: any) {
     console.log('jwt payload', payload.sub);
-    return payload.sub; // JWT의 sub 반환
+    return { googleId: payload.sub };
   }
 }
