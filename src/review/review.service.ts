@@ -23,14 +23,6 @@ export class ReviewService {
     return new Types.ObjectId(id);
   }
 
-  // ✅ 썸네일 URL 생성 함수
-  private generateThumbnailUrl(imageUrl: string): string {
-    return imageUrl.replace(
-      'https://hama-post-image.s3.ap-northeast-2.amazonaws.com/uploads/',
-      'https://hama-post-thumbnail.s3.ap-northeast-2.amazonaws.com/thumbnails/',
-    ); // ✅ 경로 변경
-  }
-
   // ✅ 상품 등록
   async createReview(
     createReviewDto: CreateReviewDto,
@@ -38,15 +30,9 @@ export class ReviewService {
   ): Promise<Review> {
     const { imageUrls } = createReviewDto;
 
-    // ✅ imageUrls을 변형하여 thumbnailUrls 생성
-    const thumbnailUrls = imageUrls.map((url) =>
-      this.generateThumbnailUrl(url),
-    );
-
     const newReview = new this.reviewModel({
       ...createReviewDto,
       googleId, // ✅ 작성자 구글 ID 추가
-      thumbnailUrls, // ✅ 썸네일 URL 추가
     });
 
     return newReview.save();
@@ -83,14 +69,6 @@ export class ReviewService {
     if (existingReview.googleId !== userGoogleId) {
       throw new ForbiddenException(
         'You are not authorized to update this review',
-      );
-    }
-
-    // ✅ imageUrls가 변경되었는지 확인
-    if (updateReviewDto.imageUrls) {
-      // ✅ 새 imageUrls를 기반으로 새로운 thumbnailUrls 생성
-      updateReviewDto.thumbnailUrls = updateReviewDto.imageUrls.map((url) =>
-        this.generateThumbnailUrl(url),
       );
     }
 
