@@ -20,8 +20,8 @@ export class ReviewController {
   @Post()
   @UseGuards(JwtAuthGuard) // ✅ JWT 인증 추가
   async createReview(@Body() createReviewDto: CreateReviewDto, @Req() req) {
-    const googleId = req.user.googleId;
-    return this.reviewService.createReview(createReviewDto, googleId);
+    const googleId = req.user.googleId; // JWT에서 Google ID 추출
+    return this.reviewService.createReview(createReviewDto, googleId); // googleId를 전달
   }
 
   @Get()
